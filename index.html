@@ -274,7 +274,7 @@
                 });
             }
             
-            return Math.min(100, baseScore + bonusAmount);
+            return Math.min(100, Math.ceil(baseScore + bonusAmount));
         }
 
         function updateDisplay() {
