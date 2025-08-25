@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Chosen Palette: Lighter Cyber Dark -->
-    <!-- Application Structure Plan: A hierarchical, single-page application. Users first select an academic level (Foundation, Diploma, Degree) via tabs. This filters a dropdown menu of available courses. Selecting a course dynamically generates a calculator interface with input fields for all weighted assessments specific to that course. A real-time results panel shows the current calculated total score (T) and letter grade. A separate, user-initiated "predict" function calculates the required scores on remaining assessments to achieve target grades. This structure guides the user logically, reduces initial cognitive load by hiding complexity, and separates the primary real-time calculation from the secondary predictive analysis for a clear, task-oriented user flow. -->
-    <!-- Visualization & Content Choices: Course categories are handled by interactive HTML tabs to filter a dropdown, improving usability. The core grading formulas are implemented in JavaScript, with results displayed in dynamic text fields for real-time feedback. Grade boundaries are visualized with color-coded badges for at-a-glance comprehension. Critical eligibility rules are presented in a collapsible info-box next to the course title and as dynamic warnings in the results panel. -->
+    <!-- Application Structure Plan: A multi-page simulated application. The default view is the grade calculator, accessible to all users. An optional login/signup flow allows users to persist their CGPA data. A navigation bar allows switching between the main grade calculator page and a dedicated CGPA calculator page, providing a clearer user flow than a modal. -->
+    <!-- Visualization & Content Choices: Course categories are handled by interactive HTML tabs to filter a dropdown. The core grading formulas are implemented in JavaScript. Grade boundaries are visualized with color-coded badges. The CGPA calculator now displays both GPA and total credits completed for each academic level. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <title>BS GRADE POINTER - Your Academic Strategy Partner</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,84 +48,184 @@
         .info-icon:hover {
             color: #67E8F9; /* hover:text-cyan-300 */
         }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
     </style>
 </head>
 <body class="antialiased">
     <canvas id="background-canvas"></canvas>
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">BS Grade Pointer</h1>
-            <p class="text-lg text-gray-400 mt-2">Your Academic Strategy Partner</p>
-        </header>
-
-        <main class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-lg p-6 md:p-8 max-w-5xl mx-auto">
-            <!-- Level Selection -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-3 text-gray-200">1. Select Your Academic Level</h2>
-                <div class="border-b border-gray-700">
-                    <nav class="-mb-px flex space-x-6" id="level-tabs">
-                        <button data-level="foundation" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500 tab-active">Foundation</button>
-                        <button data-level="diploma" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Diploma</button>
-                        <button data-level="degree" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Degree</button>
-                    </nav>
+    
+    <nav class="bg-gray-900/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                     <a href="#" id="home-link" class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">BS Grade Pointer</a>
                 </div>
-            </div>
-
-            <!-- Course Selection -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-3 text-gray-200">2. Choose Your Course</h2>
-                <select id="course-select" class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
-                    <option value="">Select a course...</option>
-                </select>
-            </div>
-
-            <!-- Calculator Interface -->
-            <div id="calculator-interface" class="hidden">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 id="course-title" class="text-2xl font-bold text-cyan-400"></h2>
-                    <button id="info-toggle" class="text-cyan-400 info-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div>
+                    <button id="cgpa-nav-link" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 mr-4">
+                        Instant CGPA Calculation
+                    </button>
+                    <button id="auth-button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105">
+                        Login to Save
                     </button>
                 </div>
-                 <div id="course-info" class="hidden bg-gray-800 border border-cyan-500/30 text-cyan-200 p-4 rounded-lg mb-6 text-sm"></div>
+            </div>
+        </div>
+    </nav>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2">
-                        <h3 class="text-xl font-semibold mb-4 text-gray-200">3. Enter Your Scores</h3>
-                        <div id="assessment-inputs" class="space-y-4"></div>
-                        <button id="predict-button" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            Calculate What I Need
+    <div id="grade-calculator-page">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+            <header class="text-center mb-8">
+                <p class="text-lg text-gray-400 mt-2">Your Academic Strategy Partner</p>
+            </header>
+
+            <main class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-lg p-6 md:p-8 max-w-5xl mx-auto">
+                <!-- Level Selection -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3 text-gray-200">1. Select Your Academic Level</h2>
+                    <div class="border-b border-gray-700">
+                        <nav class="-mb-px flex space-x-6" id="level-tabs">
+                            <button data-level="foundation" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500 tab-active">Foundation</button>
+                            <button data-level="diploma" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Diploma</button>
+                            <button data-level="degree" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Degree</button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Course Selection -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-3 text-gray-200">2. Choose Your Course</h2>
+                    <select id="course-select" class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
+                        <option value="">Select a course...</option>
+                    </select>
+                </div>
+
+                <!-- Calculator Interface -->
+                <div id="calculator-interface" class="hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 id="course-title" class="text-2xl font-bold text-cyan-400"></h2>
+                        <button id="info-toggle" class="text-cyan-400 info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </button>
                     </div>
+                     <div id="course-info" class="hidden bg-gray-800 border border-cyan-500/30 text-cyan-200 p-4 rounded-lg mb-6 text-sm"></div>
 
-                    <div class="bg-gray-800/70 p-6 rounded-xl border border-gray-700">
-                        <h3 class="text-xl font-semibold mb-4 text-center text-gray-200">Live Results</h3>
-                        <div class="text-center mb-4">
-                            <p class="text-gray-400">Total Score (T)</p>
-                            <p id="total-score" class="text-5xl font-bold text-gray-50">0.00</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-200">3. Enter Your Scores</h3>
+                            <div id="assessment-inputs" class="space-y-4"></div>
+                            <button id="predict-button" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                Calculate What I Need
+                            </button>
                         </div>
-                        <div class="text-center mb-6">
-                            <p class="text-gray-400">Projected Grade</p>
-                            <p id="final-grade" class="text-3xl font-bold text-gray-800 bg-gray-400 inline-block px-4 py-1 rounded-full">N/A</p>
+
+                        <div class="bg-gray-800/70 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold mb-4 text-center text-gray-200">Live Results</h3>
+                            <div class="text-center mb-4">
+                                <p class="text-gray-400">Total Score (T)</p>
+                                <p id="total-score" class="text-5xl font-bold text-gray-50">0.00</p>
+                            </div>
+                            <div class="text-center mb-6">
+                                <p class="text-gray-400">Projected Grade</p>
+                                <p id="final-grade" class="text-3xl font-bold text-gray-800 bg-gray-400 inline-block px-4 py-1 rounded-full">N/A</p>
+                            </div>
+                            <div id="status-message" class="text-center text-sm text-red-400 font-medium min-h-[40px]"></div>
                         </div>
-                        <div id="status-message" class="text-center text-sm text-red-400 font-medium min-h-[40px]"></div>
+                    </div>
+
+                    <!-- Prediction Results -->
+                    <div id="prediction-results" class="hidden mt-8 bg-green-900/50 p-6 rounded-xl border border-green-500/30">
+                        <h3 class="text-xl font-semibold mb-4 text-green-300">Your Path to Success</h3>
+                        <p class="text-sm text-green-200 mb-4">Here's the average score you need on all remaining assessments to achieve each grade:</p>
+                        <div id="prediction-table" class="space-y-2"></div>
                     </div>
                 </div>
+            </main>
 
-                <!-- Prediction Results -->
-                <div id="prediction-results" class="hidden mt-8 bg-green-900/50 p-6 rounded-xl border border-green-500/30">
-                    <h3 class="text-xl font-semibold mb-4 text-green-300">Your Path to Success</h3>
-                    <p class="text-sm text-green-200 mb-4">Here's the average score you need on all remaining assessments to achieve each grade:</p>
-                    <div id="prediction-table" class="space-y-2"></div>
+            <footer class="text-center mt-8 text-xs text-gray-500">
+                <p>Disclaimer: This tool is for estimation purposes only. Final grades are determined by official course policies.</p>
+                <p>BS GRADE POINTER &copy; 2025 | Contact: <a href="mailto:23f3002123@ds.study.iitm.ac.in" class="hover:text-cyan-400">23f3002123@ds.study.iitm.ac.in</a></p>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- CGPA Page -->
+    <div id="cgpa-calculator-page" class="hidden">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+             <main class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-lg max-w-4xl mx-auto">
+                <div class="flex-shrink-0 p-4 border-b border-gray-700">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-cyan-400">Instant CGPA Calculator</h3>
+                    </div>
+                    <div class="border-b border-gray-600 mt-4">
+                        <nav class="-mb-px flex space-x-6" id="cgpa-level-tabs">
+                            <button data-level="foundation" class="cgpa-tab whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500 tab-active">Foundation</button>
+                            <button data-level="diploma" class="cgpa-tab whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Diploma</button>
+                            <button data-level="degree" class="cgpa-tab whitespace-nowrap py-3 px-1 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:border-gray-500">Degree</button>
+                        </nav>
+                    </div>
                 </div>
-            </div>
-        </main>
+                
+                <div class="p-6 overflow-y-auto space-y-4 flex-grow" id="cgpa-course-lists-container" style="max-height: 50vh;">
+                    <!-- Course lists will be injected here -->
+                </div>
 
-        <footer class="text-center mt-8 text-xs text-gray-500">
-            <p>Disclaimer: This tool is for estimation purposes only. Final grades are determined by official course policies.</p>
-            <p>BS GRADE POINTER &copy; 2025 | Contact: <a href="mailto:23f3002123@ds.study.iitm.ac.in" class="hover:text-cyan-400">23f3002123@ds.study.iitm.ac.in</a></p>
-        </footer>
+                <div class="flex-shrink-0 p-6 border-t border-gray-700 mt-auto bg-gray-800/50">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <p class="text-gray-400 text-sm">Foundation</p>
+                            <p id="foundation-gpa-result" class="text-2xl font-bold text-gray-50">GPA: 0.00</p>
+                            <p id="foundation-credits-result" class="text-xs text-gray-500">Credits: 0</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">Diploma</p>
+                            <p id="diploma-gpa-result" class="text-2xl font-bold text-gray-50">GPA: 0.00</p>
+                            <p id="diploma-credits-result" class="text-xs text-gray-500">Credits: 0</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">Degree</p>
+                            <p id="degree-gpa-result" class="text-2xl font-bold text-gray-50">GPA: 0.00</p>
+                             <p id="degree-credits-result" class="text-xs text-gray-500">Credits: 0</p>
+                        </div>
+                        <div class="bg-gray-900/50 p-3 rounded-lg">
+                            <p class="text-cyan-400 text-sm">Overall CGPA</p>
+                            <p id="cgpa-result" class="text-3xl font-bold text-cyan-400">0.00</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content max-w-md w-full bg-gray-800 border border-gray-700 rounded-2xl shadow-lg p-8 space-y-6 transform scale-95">
+            <div class="flex justify-between items-center">
+                 <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Save Your Progress</h1>
+                 <button id="close-auth-modal" class="text-gray-400 hover:text-gray-200 text-2xl">&times;</button>
+            </div>
+             <p class="mt-2 text-center text-sm text-gray-400" id="auth-subtitle">Create an account to save your CGPA data</p>
+            <!-- Sign Up Form -->
+            <form id="signup-form" class="space-y-6">
+                <input type="email" id="signup-email" placeholder="Email Address" required class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
+                <input type="password" id="signup-password" placeholder="Password" required class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
+                <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105">Sign Up</button>
+            </form>
+            <!-- Login Form -->
+            <form id="login-form" class="hidden space-y-6">
+                <input type="email" id="login-email" placeholder="Email Address" required class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
+                <input type="password" id="login-password" placeholder="Password" required class="w-full p-3 border rounded-lg focus:ring-2 transition form-input">
+                <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105">Login</button>
+            </form>
+            <p id="auth-error" class="text-red-400 text-sm text-center"></p>
+            <div class="text-center text-sm">
+                <a href="#" id="auth-toggle-link" class="font-medium text-cyan-400 hover:text-cyan-300">Already have an account? Login</a>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -146,13 +246,17 @@
                 { id: 'mlp', name: 'Machine Learning Practice', formula: 'mlp', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'OPPE1', key: 'ope1' }, { name: 'OPPE2', key: 'ope2' }, { name: 'Kaggle Avg', key: 'ka' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + 0.30*F + 0.20*OPPE1 + 0.20*OPPE2 + 0.20*KA. Must score >= 40 in one OPPE. A bonus (0-2) is added if you pass." },
                 { id: 'bdm', name: 'Business Data Management', formula: 'bdm', components: [ { name: 'Graded Assignments (sum of best 3)', key: 'ga' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Remote Online Exam', key: 'roe' }, { name: 'Final Exam', key: 'f' } ], info: "T = GA + 0.20*Q2 + 0.2*ROE + 0.3*F. Note: GA score is sum of best 3 assignments (max 30), so enter total points, not percentage. No bonus for this course." },
                 { id: 'ba', name: 'Business Analytics', formula: 'ba', components: [ { name: 'Quiz 1 (out of 20)', key: 'q1' }, { name: 'Quiz 2 (out of 20)', key: 'q2' }, { name: 'Assignment 1 (out of 20)', key: 'a1' }, { name: 'Assignment 2 (out of 20)', key: 'a2' }, { name: 'Assignment 3 (out of 20)', key: 'a3' }, { name: 'Final Exam (out of 45)', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "Complex formula based on raw scores. Qz = 0.7*Max(Qz1, Qz2) + 0.3*Min(Qz1, Qz2). A = Sum of Best 2 Assignments. F is capped at 40. T = Qz + A + F. Discretionary bonus (0-2) may be awarded." },
-                { id: 'tds', name: 'Tools in Data Science', formula: 'tds', components: [ { name: 'GAA (Best 4/7)', key: 'gaa' }, { name: 'ROE1', key: 'roe1' }, { name: 'Project 1', key: 'p1' }, { name: 'Project 2', key: 'p2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.15*GAA + 0.2*ROE1 + 0.2*P1 + 0.2*P2 + 0.25*F. Discretionary bonus (0-2) may be awarded." },
+                { id: 'tds', name: 'Tools in Data Science', credits: 3, formula: 'tds', components: [ { name: 'GAA (Best 4/7)', key: 'gaa' }, { name: 'ROE1', key: 'roe1' }, { name: 'Project 1', key: 'p1' }, { name: 'Project 2', key: 'p2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.15*GAA + 0.2*ROE1 + 0.2*P1 + 0.2*P2 + 0.25*F. Discretionary bonus (0-2) may be awarded." },
                 { id: 'pdsa', name: 'PDSA', formula: 'pdsa', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'Online Proctored Exam', key: 'op' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + 0.4*F + 0.2*OP + max(0.2*max(Qz1, Qz2), (0.15*Qz1+0.15*Qz2)). A bonus (0-2) is added if you pass." },
                 { id: 'dbms', name: 'Database Management System', formula: 'dbms', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2 (SQL)', key: 'gaa2' }, { name: 'GAA3 (Prog)', key: 'gaa3' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'OPE', key: 'ope' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.04*GAA1 + 0.03*GAA2 + 0.03*GAA3 + 0.2*OP + max(0.45*F+0.15*max(Qz1,Qz2), 0.4*F+(0.10*Qz1+0.20*Qz2)). Must score >= 35 in OPE. A bonus (0-2) is added if you pass." },
                 { id: 'ad1', name: 'Application Development 1', formula: 'ad1', components: [ { name: 'GLA', key: 'gla' }, { name: 'GA', key: 'ga' }, { name: 'Final Exam', key: 'f' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.15*GLA + 0.05*GA + Max(0.35*F + 0.2*Qz1 + 0.25*Qz2, 0.4*F + 0.3*max(Qz1,Qz2)). A bonus (0-2) is added if you pass." },
                 { id: 'java', name: 'Programming Concepts using Java', formula: 'java', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'PE1', key: 'pe1' }, { name: 'PE2', key: 'pe2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' } ], info: "T = 0.1*GAA + 0.3*F + 0.2*Max(PE1,PE2) + (Bonus)0.10*Min(PE1,PE2) + max(0.25*Max(Qz1,Qz2), 0.15*Qz1+0.25*Qz2). Capped at 100. The Min(PE1,PE2) term acts as a bonus." },
-                { id: 'syscom', name: 'System Commands', formula: 'syscom', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPE', key: 'ope' }, { name: 'Final Exam', key: 'f' }, { name: 'BPTA', key: 'bpta' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.10*GAA + 0.2*Qz1 + 0.3*OPE + 0.3*F + 0.1*BPTA. A bonus (0-2) is added if you pass." },
+                { id: 'syscom', name: 'System Commands', credits: 3, formula: 'syscom', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPE', key: 'ope' }, { name: 'Final Exam', key: 'f' }, { name: 'BPTA', key: 'bpta' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.10*GAA + 0.2*Qz1 + 0.3*OPE + 0.3*F + 0.1*BPTA. A bonus (0-2) is added if you pass." },
                 { id: 'ad2', name: 'Application Development 2', formula: 'ad2', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2', key: 'gaa2' }, { name: 'Final Exam', key: 'f' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.05*GAA1 + 0.05*GAA2 + Max(0.35*F + 0.25*Qz1 + 0.3*Qz2, 0.5*F + 0.3*max(Qz1, Qz2)). A bonus (0-2) is added if you pass." },
+                { id: 'ad1p', name: 'App Dev 1 Project', credits: 2 },
+                { id: 'ad2p', name: 'App Dev 2 Project', credits: 2 },
+                { id: 'mlpp', name: 'MLP Project', credits: 2 },
+                { id: 'bdmp', name: 'BDM Project', credits: 2 },
             ],
             degree: [
                  { id: 'se', name: 'Software Engineering', formula: 'se', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 2', key: 'q2' }, { name: 'GP1', key: 'gp1' }, { name: 'GP2', key: 'gp2' }, { name: 'Project Presentation', key: 'pp' }, { name: 'Course Participation', key: 'cp' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.05*GAA + 0.2*Qz2 + 0.4*F + 0.1*GP1 + 0.1*GP2 + 0.1*PP + 0.05*CP. Submission of all project milestones is mandatory." },
@@ -169,6 +273,8 @@
             { grade: 'E', min: 40, color: 'bg-red-500', text: 'text-white' },
             { grade: 'U', min: 0, color: 'bg-red-700', text: 'text-white' }
         ];
+        
+        const gradePoints = { S: 10, A: 9, B: 8, C: 7, D: 6, E: 4, U: 0 };
 
         let currentCourse = null;
 
@@ -185,14 +291,43 @@
         const predictButton = document.getElementById('predict-button');
         const predictionResults = document.getElementById('prediction-results');
         const predictionTable = document.getElementById('prediction-table');
+        
+        // CGPA Modal elements
+        const cgpaNavLink = document.getElementById('cgpa-nav-link');
+        const cgpaPage = document.getElementById('cgpa-calculator-page');
+        const gradeCalculatorPage = document.getElementById('grade-calculator-page');
+        const homeLink = document.getElementById('home-link');
+        const cgpaLevelTabs = document.getElementById('cgpa-level-tabs');
+        const cgpaCourseListsContainer = document.getElementById('cgpa-course-lists-container');
+        const foundationGpaResultEl = document.getElementById('foundation-gpa-result');
+        const diplomaGpaResultEl = document.getElementById('diploma-gpa-result');
+        const degreeGpaResultEl = document.getElementById('degree-gpa-result');
+        const foundationCreditsResultEl = document.getElementById('foundation-credits-result');
+        const diplomaCreditsResultEl = document.getElementById('diploma-credits-result');
+        const degreeCreditsResultEl = document.getElementById('degree-credits-result');
+        const cgpaResultEl = document.getElementById('cgpa-result');
+        
+        // Auth elements
+        const authModal = document.getElementById('auth-modal');
+        const closeAuthModalButton = document.getElementById('close-auth-modal');
+        const authButton = document.getElementById('auth-button');
+        const signupForm = document.getElementById('signup-form');
+        const loginForm = document.getElementById('login-form');
+        const authToggleLink = document.getElementById('auth-toggle-link');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const authError = document.getElementById('auth-error');
+        let currentUser = null;
+
 
         function populateCourses(level) {
             courseSelect.innerHTML = '<option value="">Select a course...</option>';
             coursesData[level].forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = course.name;
-                courseSelect.appendChild(option);
+                if(course.formula) { // Only add courses with formulas to the grade calculator
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.name;
+                    courseSelect.appendChild(option);
+                }
             });
             calculatorInterface.classList.add('hidden');
         }
@@ -274,7 +409,7 @@
                 });
             }
             
-            return Math.min(100, Math.ceil(baseScore + bonusAmount));
+            return Math.min(100, baseScore + bonusAmount);
         }
 
         function updateDisplay() {
@@ -447,6 +582,93 @@
             predictionResults.classList.add('hidden');
         }
         
+        // CGPA Calculator Logic
+        function populateCgpaModal() {
+            cgpaCourseListsContainer.innerHTML = '';
+            const gradeOptions = `<option value="">Grade</option>` + Object.keys(gradePoints).map(g => `<option value="${g}">${g}</option>`).join('');
+
+            Object.keys(coursesData).forEach(level => {
+                const levelContainer = document.createElement('div');
+                levelContainer.id = `cgpa-list-${level}`;
+                levelContainer.className = 'cgpa-level-container space-y-2';
+                if (level !== 'foundation') {
+                    levelContainer.classList.add('hidden');
+                }
+
+                coursesData[level].forEach(course => {
+                    const row = document.createElement('div');
+                    row.className = 'grid grid-cols-12 gap-4 items-center';
+                    row.innerHTML = `
+                        <label class="col-span-8 text-gray-300">${course.name}</label>
+                        <select data-course-id="${course.id}" class="col-span-4 p-2 border rounded-md form-input cgpa-grade-select">
+                            ${gradeOptions}
+                        </select>
+                    `;
+                    levelContainer.appendChild(row);
+                });
+                cgpaCourseListsContainer.appendChild(levelContainer);
+            });
+        }
+        
+        function calculateCgpa() {
+            let overallTotalPoints = 0;
+            let overallTotalCredits = 0;
+
+            Object.keys(coursesData).forEach(level => {
+                let levelTotalPoints = 0;
+                let levelTotalCredits = 0;
+                const levelContainer = document.getElementById(`cgpa-list-${level}`);
+                const gradeSelects = levelContainer.querySelectorAll('.cgpa-grade-select');
+
+                gradeSelects.forEach(select => {
+                    const grade = select.value;
+                    if (grade) {
+                        const courseId = select.dataset.courseId;
+                        const course = coursesData[level].find(c => c.id === courseId);
+                        const credits = course.credits || 4;
+                        const point = gradePoints[grade];
+                        levelTotalPoints += point * credits;
+                        levelTotalCredits += credits;
+                    }
+                });
+
+                const gpa = levelTotalCredits > 0 ? (levelTotalPoints / levelTotalCredits).toFixed(2) : '0.00';
+                document.getElementById(`${level}-gpa-result`).textContent = `GPA: ${gpa}`;
+                document.getElementById(`${level}-credits-result`).textContent = `Credits: ${levelTotalCredits}`;
+
+
+                overallTotalPoints += levelTotalPoints;
+                overallTotalCredits += levelTotalCredits;
+            });
+
+            const cgpa = overallTotalCredits > 0 ? (overallTotalPoints / overallTotalCredits).toFixed(2) : '0.00';
+            cgpaResultEl.textContent = cgpa;
+            if (currentUser) {
+                saveCgpaData();
+            }
+        }
+        
+        function saveCgpaData() {
+            if (!currentUser) return;
+            const data = {};
+            cgpaCourseListsContainer.querySelectorAll('.cgpa-grade-select').forEach(select => {
+                if (select.value) {
+                    data[select.dataset.courseId] = select.value;
+                }
+            });
+            localStorage.setItem(`cgpa_${currentUser}`, JSON.stringify(data));
+        }
+
+        function loadCgpaData() {
+            if (!currentUser) return;
+            const data = JSON.parse(localStorage.getItem(`cgpa_${currentUser}`)) || {};
+            cgpaCourseListsContainer.querySelectorAll('.cgpa-grade-select').forEach(select => {
+                const courseId = select.dataset.courseId;
+                select.value = data[courseId] || "";
+            });
+            calculateCgpa();
+        }
+
         // Background Animation
         const canvas = document.getElementById('background-canvas');
         const ctx = canvas.getContext('2d');
@@ -520,12 +742,132 @@
         });
 
         predictButton.addEventListener('click', predictScores);
+        
+        // Page Navigation
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            cgpaPage.classList.add('hidden');
+            gradeCalculatorPage.classList.remove('hidden');
+        });
+
+        cgpaNavLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            gradeCalculatorPage.classList.add('hidden');
+            cgpaPage.classList.remove('hidden');
+            loadCgpaData();
+        });
+        
+        // CGPA Modal Listeners
+        closeAuthModalButton.addEventListener('click', () => {
+            authModal.classList.add('opacity-0', 'pointer-events-none');
+            authModal.querySelector('.modal-content').classList.add('scale-95');
+        });
+        
+        cgpaLevelTabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('cgpa-tab')) {
+                document.querySelectorAll('.cgpa-tab').forEach(tab => tab.classList.remove('tab-active'));
+                e.target.classList.add('tab-active');
+                const level = e.target.dataset.level;
+                document.querySelectorAll('.cgpa-level-container').forEach(container => {
+                    container.classList.add('hidden');
+                });
+                document.getElementById(`cgpa-list-${level}`).classList.remove('hidden');
+            }
+        });
+        
+        cgpaCourseListsContainer.addEventListener('change', calculateCgpa);
+        
+        // Auth Listeners
+        authButton.addEventListener('click', () => {
+            if (currentUser) { // Logout action
+                currentUser = null;
+                localStorage.removeItem('loggedInUser');
+                updateAuthButton();
+            } else { // Show login modal
+                authModal.classList.remove('opacity-0', 'pointer-events-none');
+                authModal.querySelector('.modal-content').classList.remove('scale-95');
+            }
+        });
+        
+        closeAuthModalButton.addEventListener('click', () => {
+            authModal.classList.add('opacity-0', 'pointer-events-none');
+            authModal.querySelector('.modal-content').classList.add('scale-95');
+        });
+
+        authToggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupForm.classList.toggle('hidden');
+            loginForm.classList.toggle('hidden');
+            authError.textContent = '';
+            if (loginForm.classList.contains('hidden')) {
+                authSubtitle.textContent = 'Create an account to save your CGPA data';
+                authToggleLink.textContent = 'Already have an account? Login';
+            } else {
+                authSubtitle.textContent = 'Login to your account';
+                authToggleLink.textContent = "Don't have an account? Sign Up";
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            
+            if (users[email]) {
+                authError.textContent = 'User with this email already exists.';
+                return;
+            }
+            
+            users[email] = { password };
+            localStorage.setItem('users', JSON.stringify(users));
+            currentUser = email;
+            localStorage.setItem('loggedInUser', currentUser);
+            updateAuthButton();
+            closeAuthModalButton.click();
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[email] && users[email].password === password) {
+                currentUser = email;
+                localStorage.setItem('loggedInUser', currentUser);
+                updateAuthButton();
+                closeAuthModalButton.click();
+            } else {
+                authError.textContent = 'Invalid email or password.';
+            }
+        });
+        
+        function updateAuthButton() {
+            if (currentUser) {
+                authButton.textContent = 'Logout';
+                authButton.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                authButton.classList.add('bg-red-500', 'hover:bg-red-600');
+            } else {
+                authButton.textContent = 'Login to Save';
+                authButton.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                authButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+            }
+        }
 
         // Initial setup
-        resizeCanvas();
-        createParticles();
-        animate();
-        populateCourses('foundation');
+        function initialize() {
+            resizeCanvas();
+            createParticles();
+            animate();
+            populateCourses('foundation');
+            populateCgpaModal();
+            
+            currentUser = localStorage.getItem('loggedInUser');
+            updateAuthButton();
+        }
+        
+        initialize();
     </script>
 </body>
 </html>
