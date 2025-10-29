@@ -229,40 +229,57 @@
     </div>
 
     <script>
+        // Updated coursesData with new formulas and components
         const coursesData = {
             foundation: [
-                { id: 'math1', name: 'Mathematics for Data Science 1', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Mock Test Bonus', key: 'mockBonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
-                { id: 'eng1', name: 'English 1', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Mock Test Bonus', key: 'mockBonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
-                { id: 'ct', name: 'Computational Thinking', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Mock Test Bonus', key: 'mockBonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
+                { id: 'math1', name: 'Mathematics for Data Science 1', formula: 'foundation_std', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). General Bonus (0-2) may apply if passing." },
+                { id: 'eng1', name: 'English 1', formula: 'foundation_std', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). General Bonus (0-2) may apply if passing." },
+                { id: 'ct', name: 'Computational Thinking', formula: 'foundation_std', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). General Bonus (0-2) may apply if passing." },
                 { id: 'stats1', name: 'Statistics for Data Science 1', formula: 'stats1', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Course Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 5 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2) + Bonus (capped at 5)." },
-                { id: 'math2', name: 'Mathematics for Data Science 2', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
-                { id: 'eng2', name: 'English 2', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
-                { id: 'py', name: 'Intro to Python Programming', formula: 'python', components: [ { name: 'GAA1 (Obj)', key: 'gaa1' }, { name: 'GAA2 (Prog)', key: 'gaa2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPPE1', key: 'pe1' }, { name: 'OPPE2', key: 'pe2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA1 + 0.1*GAA2 + 0.1*Qz1 + 0.4*F + 0.25*max(PE1, PE2) + 0.15*min(PE1, PE2). Must score >= 40 in at least one OPPE. A bonus (0-2) is added if you pass." },
-                { id: 'stats2', name: 'Statistics for Data Science 2', formula: 'stats1', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Course Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 5 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2) + Bonus (capped at 5)." },
+                { id: 'math2', name: 'Mathematics for Data Science 2', formula: 'math2', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Bonus % (B)', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = (0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2)) * (1 + 0.01*B). Enter Bonus as percentage points (e.g., 2 for 2%)." },
+                { id: 'eng2', name: 'English 2', formula: 'foundation_std', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). General Bonus (0-2) may apply if passing." },
+                { id: 'py', name: 'Intro to Python Programming', formula: 'python', components: [ { name: 'GAA1 (Obj)', key: 'gaa1' }, { name: 'GAA2 (Prog)', key: 'gaa2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPPE1', key: 'pe1' }, { name: 'OPPE2', key: 'pe2' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.1*GAA1 + 0.1*GAA2 + 0.1*Qz1 + 0.4*F + 0.25*max(PE1, PE2) + 0.15*min(PE1, PE2). Must score >= 40 in at least one OPPE. General Bonus (0-2) may apply if passing." },
+                { id: 'stats2', name: 'Statistics for Data Science 2', formula: 'stats2', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Course Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 5 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2) + Bonus (capped at 5)." },
             ],
             diploma: [
-                { id: 'mlf', name: 'Machine Learning Foundations', formula: 'standard', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). A bonus (0-2) is added if you pass the course (T>=40)." },
-                { id: 'mlt', name: 'Machine Learning Techniques', formula: 'mlt', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Programming Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 3 } ], info: "T = 0.1*GAA + 0.4*F + Max(0.25*Qz1 + 0.25*Qz2, 0.4*max(Qz1,Qz2)). Bonus of 3 marks awarded IF average of ALL assignments >= 40." },
-                { id: 'mlp', name: 'Machine Learning Practice', formula: 'mlp', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'OPPE1', key: 'ope1' }, { name: 'OPPE2', key: 'ope2' }, { name: 'Kaggle Avg', key: 'ka' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + 0.30*F + 0.20*OPPE1 + 0.20*OPPE2 + 0.20*KA. Must score >= 40 in one OPPE. A bonus (0-2) is added if you pass." },
-                { id: 'bdm', name: 'Business Data Management', formula: 'bdm', components: [ { name: 'Graded Assignments (sum of best 3)', key: 'ga' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Remote Online Exam', key: 'roe' }, { name: 'Final Exam', key: 'f' } ], info: "T = GA + 0.20*Q2 + 0.2*ROE + 0.3*F. Note: GA score is sum of best 3 assignments (max 30), so enter total points, not percentage. No bonus for this course." },
-                { id: 'ba', name: 'Business Analytics', formula: 'ba', components: [ { name: 'Quiz 1 (out of 20)', key: 'q1' }, { name: 'Quiz 2 (out of 20)', key: 'q2' }, { name: 'Assignment 1 (out of 20)', key: 'a1' }, { name: 'Assignment 2 (out of 20)', key: 'a2' }, { name: 'Assignment 3 (out of 20)', key: 'a3' }, { name: 'Final Exam (out of 45)', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "Complex formula based on raw scores. Qz = 0.7*Max(Qz1, Qz2) + 0.3*Min(Qz1, Qz2). A = Sum of Best 2 Assignments. F is capped at 40. T = Qz + A + F. Discretionary bonus (0-2) may be awarded." },
-                { id: 'tds', name: 'Tools in Data Science', credits: 3, formula: 'tds', components: [ { name: 'GAA (Best 4/7)', key: 'gaa' }, { name: 'ROE1', key: 'roe1' }, { name: 'Project 1', key: 'p1' }, { name: 'Project 2', key: 'p2' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.15*GAA + 0.2*ROE1 + 0.2*P1 + 0.2*P2 + 0.25*F. Discretionary bonus (0-2) may be awarded." },
-                { id: 'pdsa', name: 'PDSA', formula: 'pdsa', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'Online Proctored Exam', key: 'op' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.1*GAA + 0.4*F + 0.2*OP + max(0.2*max(Qz1, Qz2), (0.15*Qz1+0.15*Qz2)). A bonus (0-2) is added if you pass." },
-                { id: 'dbms', name: 'Database Management System', formula: 'dbms', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2 (SQL)', key: 'gaa2' }, { name: 'GAA3 (Prog)', key: 'gaa3' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'OPE', key: 'ope' }, { name: 'Final Exam', key: 'f' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.04*GAA1 + 0.03*GAA2 + 0.03*GAA3 + 0.2*OP + max(0.45*F+0.15*max(Qz1,Qz2), 0.4*F+(0.10*Qz1+0.20*Qz2)). Must score >= 35 in OPE. A bonus (0-2) is added if you pass." },
-                { id: 'ad1', name: 'Application Development 1', formula: 'ad1', components: [ { name: 'GLA', key: 'gla' }, { name: 'GA', key: 'ga' }, { name: 'Final Exam', key: 'f' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.15*GLA + 0.05*GA + Max(0.35*F + 0.2*Qz1 + 0.25*Qz2, 0.4*F + 0.3*max(Qz1,Qz2)). A bonus (0-2) is added if you pass." },
-                { id: 'java', name: 'Programming Concepts using Java', formula: 'java', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'PE1', key: 'pe1' }, { name: 'PE2', key: 'pe2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' } ], info: "T = 0.1*GAA + 0.3*F + 0.2*Max(PE1,PE2) + (Bonus)0.10*Min(PE1,PE2) + max(0.25*Max(Qz1,Qz2), 0.15*Qz1+0.25*Qz2). Capped at 100. The Min(PE1,PE2) term acts as a bonus." },
-                { id: 'syscom', name: 'System Commands', credits: 3, formula: 'syscom', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPE', key: 'ope' }, { name: 'Final Exam', key: 'f' }, { name: 'BPTA', key: 'bpta' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.10*GAA + 0.2*Qz1 + 0.3*OPE + 0.3*F + 0.1*BPTA. A bonus (0-2) is added if you pass." },
-                { id: 'ad2', name: 'Application Development 2', formula: 'ad2', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2', key: 'gaa2' }, { name: 'Final Exam', key: 'f' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Discretionary Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 2 } ], info: "T = 0.05*GAA1 + 0.05*GAA2 + Max(0.35*F + 0.25*Qz1 + 0.3*Qz2, 0.5*F + 0.3*max(Qz1, Qz2)). A bonus (0-2) is added if you pass." },
+                { id: 'mlf', name: 'Machine Learning Foundations', formula: 'foundation_std', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.1*GAA + max(0.6*F + 0.2*max(Qz1, Qz2), 0.4*F + 0.2*Qz1 + 0.3*Qz2). General Bonus (0-2) may apply if passing." },
+                { id: 'mlt', name: 'Machine Learning Techniques', formula: 'mlt', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Assignment Avg >= 40?', key: 'bonus_cond', type: 'checkbox', isBonus: true }], info: "T = 0.1*GAA + 0.4*F + max(0.25*Qz1 + 0.25*Qz2, 0.4*max(Qz1,Qz2)). +3 bonus marks added if Assignment Avg >= 40 checked and passing." },
+                { id: 'mlp', name: 'Machine Learning Practice', formula: 'mlp', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'OPPE1', key: 'ope1' }, { name: 'OPPE2', key: 'ope2' }, { name: 'Kaggle Avg', key: 'ka' } ], info: "T = 0.1*GAA + 0.30*F + 0.20*OPPE1 + 0.20*OPPE2 + 0.20*KA. Must score >= 40 in one OPPE. General Bonus (0-2) may apply if passing." },
+                { id: 'bdm', name: 'Business Data Management', formula: 'bdm', components: [ { name: 'GAA (Best 3 Sum)', key: 'ga' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Timed Assignment', key: 'roe' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.3*GA + 0.20*Q2 + 0.2*ROE + 0.3*F. Note GA is sum (max 30), not avg." }, // Updated GAA description
+                { id: 'ba', name: 'Business Analytics', formula: 'ba', components: [ { name: 'Quiz 1 (out of 20)', key: 'q1' }, { name: 'Quiz 2 (out of 20)', key: 'q2' }, { name: 'Assignment 1 (out of 20)', key: 'a1' }, { name: 'Assignment 2 (out of 20)', key: 'a2' }, { name: 'Assignment 3 (out of 20)', key: 'a3' }, { name: 'Final Exam (out of 45)', key: 'f' } ], info: "Qz = 0.7*Max(Qz1, Qz2) + 0.3*Min(Qz1, Qz2). A = Sum of Best 2 Assignments. F_capped = min(F, 40). T = A + Qz + F_capped. General Bonus (0-2) may apply if passing." }, // Clarified F capping
+                { id: 'tds', name: 'Tools in Data Science', credits: 3, formula: 'tds', components: [ { name: 'GAA', key: 'gaa' }, { name: 'ROE', key: 'roe' }, { name: 'Project 1', key: 'p1' }, { name: 'Project 2', key: 'p2' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.2*GAA + 0.2*ROE + 0.2*P1 + 0.2*P2 + 0.2*F. General Bonus (0-2) may apply if passing." }, // Corrected formula weights
+                { id: 'pdsa', name: 'PDSA', formula: 'pdsa', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Final Exam', key: 'f' }, { name: 'Online Proctored Exam', key: 'op' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' } ], info: "T = 0.1*GAA + 0.4*F + 0.2*OP + max(0.2*max(Qz1, Qz2), (0.15*Qz1 + 0.15*Qz2)). General Bonus (0-2) may apply if passing." },
+                { id: 'dbms', name: 'Database Management System', formula: 'dbms', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2 (SQL)', key: 'gaa2' }, { name: 'GAA3 (Prog)', key: 'gaa3' }, { name: 'OPE', key: 'ope' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.04*GAA1 + 0.03*GAA2 + 0.03*GAA3 + 0.2*OPE + max(0.45*F + 0.15*max(Qz1,Qz2), 0.4*F + (0.10*Qz1 + 0.20*Qz2)). Must score >= 35 in OPE. General Bonus (0-2) may apply if passing." },
+                { id: 'ad1', name: 'Application Development 1', formula: 'ad1', components: [ { name: 'GLA Avg', key: 'gla' }, { name: 'GA Avg', key: 'ga' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.15*GLA + 0.05*GA + max(0.35*F + 0.2*Qz1 + 0.25*Qz2, 0.4*F + 0.3*max(Qz1,Qz2)). General Bonus (0-2) may apply if passing." }, // Used max instead of Best
+                { id: 'java', name: 'Programming Concepts using Java', formula: 'java', components: [ { name: 'GAA', key: 'gaa' }, { name: 'PE1', key: 'pe1' }, { name: 'PE2', key: 'pe2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.1*GAA + 0.3*F + 0.2*max(PE1,PE2) + (0.10*min(PE1,PE2)) + max(0.25*max(Qz1,Qz2), 0.15*Qz1+0.25*Qz2). Min(PE1,PE2) term acts as bonus. T capped at 100." },
+                { id: 'syscom', name: 'System Commands', credits: 3, formula: 'syscom', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'OPE', key: 'ope' }, { name: 'BPTA', key: 'bpta' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.10*GAA + 0.2*Qz1 + 0.3*OPE + 0.3*F + 0.1*BPTA. General Bonus (0-2) may apply if passing." },
+                { id: 'ad2', name: 'Application Development 2', formula: 'ad2', components: [ { name: 'GAA1', key: 'gaa1' }, { name: 'GAA2', key: 'gaa2' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }], info: "T = 0.05*GAA1 + 0.05*GAA2 + max(0.35*F + 0.25*Qz1 + 0.3*Qz2, 0.5*F + 0.3*max(Qz1, Qz2)). General Bonus (0-2) may apply if passing." }, // Used max instead of Best
+                { id: 'dl_genai', name: 'Intro to Deep Learning & Gen AI', formula: 'dl_genai', components: [ { name: 'GAA', key: 'gaa'}, { name: 'Quiz 1', key: 'q1'}, { name: 'Quiz 2', key: 'q2'}, { name: 'NPPE1', key: 'nppe1'}, { name: 'NPPE2', key: 'nppe2'}, { name: 'Final Exam', key: 'f'} ], info: "T = 0.2*GAA + 0.15*Qz1 + 0.15*Qz2 + 0.2*F + 0.15*NPPE1 + 0.15*NPPE2. General Bonus (0-2) may apply if passing." }, // Added new course
                 { id: 'ad1p', name: 'App Dev 1 Project', credits: 2 },
                 { id: 'ad2p', name: 'App Dev 2 Project', credits: 2 },
                 { id: 'mlpp', name: 'MLP Project', credits: 2 },
                 { id: 'bdmp', name: 'BDM Project', credits: 2 },
             ],
-            degree: [
+            degree: [ // Assuming degree courses might also have a general bonus if not specified otherwise
                  { id: 'se', name: 'Software Engineering', formula: 'se', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 2', key: 'q2' }, { name: 'GP1', key: 'gp1' }, { name: 'GP2', key: 'gp2' }, { name: 'Project Presentation', key: 'pp' }, { name: 'Course Participation', key: 'cp' }, { name: 'Final Exam', key: 'f' } ], info: "T = 0.05*GAA + 0.2*Qz2 + 0.4*F + 0.1*GP1 + 0.1*GP2 + 0.1*PP + 0.05*CP. Submission of all project milestones is mandatory." },
-                 { id: 'dl', name: 'Deep Learning', formula: 'dl', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Course Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 5 } ], info: "T = 0.1*GAA + 0.4*F + 0.25*Qz1 + 0.25*Qz2 + Bonus (if passed)." }
+                 { id: 'dl', name: 'Deep Learning', formula: 'dl', components: [ { name: 'GAA', key: 'gaa' }, { name: 'Quiz 1', key: 'q1' }, { name: 'Quiz 2', key: 'q2' }, { name: 'Final Exam', key: 'f' }, { name: 'Course Bonus', key: 'bonus', type: 'number', isBonus: true, bonusValue: 5 } ], info: "T = 0.1*GAA + 0.4*F + 0.25*Qz1 + 0.25*Qz2 + Bonus (capped at 5)." }
+                 // Add other degree courses here if provided
             ]
         };
+
+        // Add a general bonus field to courses that don't have a specific bonus type defined (excluding BDM which explicitly has none)
+        Object.keys(coursesData).forEach(level => {
+            coursesData[level].forEach(course => {
+                if (course.formula && course.id !== 'bdm' && !course.components.some(c => c.isBonus)) {
+                     // Add general bonus if no specific bonus exists and it's not BDM
+                     if(course.id !== 'java') { // Java handles bonus via min(PE1, PE2)
+                        course.components.push({ name: 'General Bonus', key: 'gen_bonus', type: 'number', isBonus: true, bonusValue: 2 });
+                        course.info += " General Bonus (0-2) may apply if passing.";
+                     }
+                }
+            });
+        });
+
 
         const gradeBoundaries = [
             { grade: 'S', min: 90, color: 'bg-green-500', text: 'text-white' },
@@ -322,7 +339,8 @@
         function populateCourses(level) {
             courseSelect.innerHTML = '<option value="">Select a course...</option>';
             coursesData[level].forEach(course => {
-                if(course.formula) { // Only add courses with formulas to the grade calculator
+                // Only populate calculable courses in the grade calculator dropdown
+                if(course.formula) { 
                     const option = document.createElement('option');
                     option.value = course.id;
                     option.textContent = course.name;
@@ -332,85 +350,127 @@
             calculatorInterface.classList.add('hidden');
         }
 
-        function calculateTotalScore(scores, formula) {
+        // Updated calculateTotalScore Function
+        function calculateTotalScore(scores, courseId) {
+             // Find the course details using courseId across all levels
+             let courseDetails = null;
+             for (const level in coursesData) {
+                 courseDetails = coursesData[level].find(c => c.id === courseId);
+                 if (courseDetails) break;
+             }
+             if (!courseDetails) return 0; // Should not happen if called correctly
+
+
             let baseScore = 0;
             const s = scores; // shorthand
+            const formula = courseDetails.formula; // Use formula from courseDetails
 
             switch (formula) {
-                case 'standard':
-                case 'stats1':
-                case 'dl':
-                    const maxWeighted = 0.6 * (s.f ?? 0) + 0.2 * Math.max(s.q1 ?? 0, s.q2 ?? 0);
-                    const balanced = 0.4 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0);
-                    baseScore = 0.1 * (s.gaa ?? 0) + Math.max(maxWeighted, balanced);
-                    if (formula === 'dl') { // DL has a different standard formula
-                         baseScore = 0.1 * (s.gaa ?? 0) + 0.4 * (s.f ?? 0) + 0.25 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0);
-                    }
+                case 'foundation_std': // Covers math1, eng1, ct, eng2, mlf
+                    baseScore = 0.1 * (s.gaa ?? 0) + Math.max(0.6 * (s.f ?? 0) + 0.2 * Math.max(s.q1 ?? 0, s.q2 ?? 0), 0.4 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0));
+                    break;
+                case 'stats1': // Covers stats1
+                case 'stats2': // Covers stats2
+                    baseScore = 0.1 * (s.gaa ?? 0) + Math.max(0.6 * (s.f ?? 0) + 0.2 * Math.max(s.q1 ?? 0, s.q2 ?? 0), 0.4 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0));
+                    // Specific bonus handled later
+                    break;
+                 case 'math2':
+                    const math2_base = 0.1 * (s.gaa ?? 0) + Math.max(0.6 * (s.f ?? 0) + 0.2 * Math.max(s.q1 ?? 0, s.q2 ?? 0), 0.4 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0));
+                    const math2_bonus_perc = s.bonus ?? 0; // Bonus percentage points
+                    baseScore = math2_base * (1 + 0.01 * math2_bonus_perc);
+                    // This bonus is multiplicative, applied regardless of passing status per formula.
+                    // We'll skip the general additive bonus later for this specific case.
                     break;
                 case 'python':
                     baseScore = 0.1 * (s.gaa1 ?? 0) + 0.1 * (s.gaa2 ?? 0) + 0.1 * (s.q1 ?? 0) + 0.4 * (s.f ?? 0) + 0.25 * Math.max(s.pe1 ?? 0, s.pe2 ?? 0) + 0.15 * Math.min(s.pe1 ?? 0, s.pe2 ?? 0);
                     break;
-                case 'dbms':
-                    const dbms_max_w = 0.45 * (s.f ?? 0) + 0.15 * Math.max(s.q1 ?? 0, s.q2 ?? 0);
-                    const dbms_bal = 0.4 * (s.f ?? 0) + 0.10 * (s.q1 ?? 0) + 0.20 * (s.q2 ?? 0);
-                    baseScore = 0.04 * (s.gaa1 ?? 0) + 0.03 * (s.gaa2 ?? 0) + 0.03 * (s.gaa3 ?? 0) + 0.2 * (s.ope ?? 0) + Math.max(dbms_max_w, dbms_bal);
-                    break;
                 case 'mlt':
                     baseScore = 0.1 * (s.gaa ?? 0) + 0.4 * (s.f ?? 0) + Math.max(0.25 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0), 0.4 * Math.max(s.q1 ?? 0, s.q2 ?? 0));
+                    // Conditional +3 bonus handled later
                     break;
                 case 'mlp':
                     baseScore = 0.1 * (s.gaa ?? 0) + 0.30 * (s.f ?? 0) + 0.20 * (s.ope1 ?? 0) + 0.20 * (s.ope2 ?? 0) + 0.20 * (s.ka ?? 0);
                     break;
-                case 'bdm':
-                    baseScore = (s.gaa ?? 0) + 0.20 * (s.q2 ?? 0) + 0.2 * (s.roe ?? 0) + 0.3 * (s.f ?? 0);
+                case 'bdm': // Has 0.3*GA where GA is sum of best 3 (max 30) - Updated BDM component name
+                    baseScore = 0.3 * (s.ga ?? 0) + 0.20 * (s.q2 ?? 0) + 0.2 * (s.roe ?? 0) + 0.3 * (s.f ?? 0); // Assuming 'roe' is the Timed Assignment
                     break;
                 case 'ba':
                     const qz = 0.7 * Math.max(s.q1 ?? 0, s.q2 ?? 0) + 0.3 * Math.min(s.q1 ?? 0, s.q2 ?? 0);
                     const asgnScores = [s.a1 ?? 0, s.a2 ?? 0, s.a3 ?? 0].sort((a, b) => b - a);
-                    const A = asgnScores[0] + asgnScores[1];
-                    const F = Math.min(s.f ?? 0, 40);
-                    baseScore = qz + A + F;
+                    const A = (asgnScores[0] ?? 0) + (asgnScores[1] ?? 0); // Sum of best 2
+                    const F_capped = Math.min(s.f ?? 0, 40); // F capped at 40
+                    baseScore = A + qz + F_capped;
                     break;
-                case 'tds':
-                    baseScore = 0.15 * (s.gaa ?? 0) + 0.2 * (s.roe1 ?? 0) + 0.2 * (s.p1 ?? 0) + 0.2 * (s.p2 ?? 0) + 0.25 * (s.f ?? 0);
+                case 'tds': // Updated weights
+                    baseScore = 0.2 * (s.gaa ?? 0) + 0.2 * (s.roe ?? 0) + 0.2 * (s.p1 ?? 0) + 0.2 * (s.p2 ?? 0) + 0.2 * (s.f ?? 0);
                     break;
                 case 'pdsa':
                     baseScore = 0.1 * (s.gaa ?? 0) + 0.4 * (s.f ?? 0) + 0.2 * (s.op ?? 0) + Math.max(0.2 * Math.max(s.q1 ?? 0, s.q2 ?? 0), (0.15 * (s.q1 ?? 0) + 0.15 * (s.q2 ?? 0)));
                     break;
+                case 'dbms':
+                    const dbms_max_w = 0.45 * (s.f ?? 0) + 0.15 * Math.max(s.q1 ?? 0, s.q2 ?? 0);
+                    const dbms_bal = 0.4 * (s.f ?? 0) + (0.10 * (s.q1 ?? 0) + 0.20 * (s.q2 ?? 0));
+                    baseScore = 0.04 * (s.gaa1 ?? 0) + 0.03 * (s.gaa2 ?? 0) + 0.03 * (s.gaa3 ?? 0) + 0.2 * (s.ope ?? 0) + Math.max(dbms_max_w, dbms_bal);
+                    break;
                 case 'ad1':
-                    baseScore = 0.15 * (s.gla ?? 0) + 0.05 * (s.ga ?? 0) + Math.max(0.35 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0), 0.4 * (s.f ?? 0) + 0.3 * Math.max(s.q1 ?? 0, s.q2 ?? 0));
+                    baseScore = 0.15 * (s.gla ?? 0) + 0.05 * (s.ga ?? 0) + Math.max(0.35 * (s.f ?? 0) + 0.2 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0), 0.4 * (s.f ?? 0) + 0.3 * Math.max(s.q1 ?? 0, s.q2 ?? 0)); // Used max instead of Best
                     break;
                 case 'java':
                     const quizPart = Math.max(0.25 * Math.max(s.q1 ?? 0, s.q2 ?? 0), 0.15 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0));
-                    const pePart = 0.2 * Math.max(s.pe1 ?? 0, s.pe2 ?? 0) + 0.10 * Math.min(s.pe1 ?? 0, s.pe2 ?? 0);
-                    baseScore = 0.1 * (s.gaa ?? 0) + 0.3 * (s.f ?? 0) + pePart + quizPart;
+                    const peBonusPart = 0.10 * Math.min(s.pe1 ?? 0, s.pe2 ?? 0); // Bonus part
+                    const peMainPart = 0.2 * Math.max(s.pe1 ?? 0, s.pe2 ?? 0);
+                    baseScore = 0.1 * (s.gaa ?? 0) + 0.3 * (s.f ?? 0) + peMainPart + peBonusPart + quizPart;
+                    // Bonus handled within formula, skip general bonus later
                     break;
                 case 'syscom':
                     baseScore = 0.10 * (s.gaa ?? 0) + 0.2 * (s.q1 ?? 0) + 0.3 * (s.ope ?? 0) + 0.3 * (s.f ?? 0) + 0.1 * (s.bpta ?? 0);
                     break;
                 case 'ad2':
-                    baseScore = 0.05 * (s.gaa1 ?? 0) + 0.05 * (s.gaa2 ?? 0) + Math.max(0.35 * (s.f ?? 0) + 0.25 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0), 0.5 * (s.f ?? 0) + 0.3 * Math.max(s.q1 ?? 0, s.q2 ?? 0));
+                     baseScore = 0.05 * (s.gaa1 ?? 0) + 0.05 * (s.gaa2 ?? 0) + Math.max(0.35 * (s.f ?? 0) + 0.25 * (s.q1 ?? 0) + 0.3 * (s.q2 ?? 0), 0.5 * (s.f ?? 0) + 0.3 * Math.max(s.q1 ?? 0, s.q2 ?? 0)); // Used max instead of Best
                     break;
-                case 'se':
-                    baseScore = 0.05*(s.gaa ?? 0) + 0.2*(s.q2 ?? 0) + 0.4*(s.f ?? 0) + 0.1*(s.gp1 ?? 0) + 0.1*(s.gp2 ?? 0) + 0.1*(s.pp ?? 0) + 0.05*(s.cp ?? 0);
+                case 'dl_genai': // New course
+                    baseScore = 0.2*(s.gaa ?? 0) + 0.15*(s.q1 ?? 0) + 0.15*(s.q2 ?? 0) + 0.2*(s.f ?? 0) + 0.15*(s.nppe1 ?? 0) + 0.15*(s.nppe2 ?? 0);
                     break;
+                 case 'se': // Degree course
+                     baseScore = 0.05*(s.gaa ?? 0) + 0.2*(s.q2 ?? 0) + 0.4*(s.f ?? 0) + 0.1*(s.gp1 ?? 0) + 0.1*(s.gp2 ?? 0) + 0.1*(s.pp ?? 0) + 0.05*(s.cp ?? 0);
+                     break;
+                 case 'dl': // Degree course
+                     baseScore = 0.1 * (s.gaa ?? 0) + 0.4 * (s.f ?? 0) + 0.25 * (s.q1 ?? 0) + 0.25 * (s.q2 ?? 0);
+                     // Specific bonus handled later
+                     break;
+
+                // Add cases for other degree courses if needed
             }
 
-            let bonusAmount = 0;
-            if (baseScore >= 40) { // Bonuses only apply if passing
-                currentCourse.components.forEach(comp => {
-                    if (comp.isBonus && s[comp.key]) {
-                        if (typeof s[comp.key] === 'boolean') { // for checkboxes if any
-                            bonusAmount += comp.bonusValue;
-                        } else { // for numbers
-                            bonusAmount += s[comp.key];
-                        }
-                    }
-                });
+            // Apply Bonuses (conditional on passing, excluding specific multiplicative/integrated bonuses)
+            let additiveBonusAmount = 0;
+            if (baseScore >= 40 && formula !== 'math2' && formula !== 'java') {
+                 // MLT Specific Bonus
+                 if (formula === 'mlt' && s.bonus_cond) { // Check if the condition checkbox is checked
+                     additiveBonusAmount += 3;
+                 }
+                 // Stats1 / Stats2 / DL Specific Bonus (capped)
+                 else if (formula === 'stats1' || formula === 'stats2' || formula === 'dl') {
+                     const bonusComp = courseDetails.components.find(c => c.key === 'bonus');
+                     additiveBonusAmount += Math.min(s.bonus ?? 0, bonusComp.bonusValue);
+                 }
+                 // General Bonus (if applicable and entered)
+                 else {
+                     const genBonusComp = courseDetails.components.find(c => c.key === 'gen_bonus');
+                      if(genBonusComp && s.gen_bonus) {
+                         additiveBonusAmount += Math.min(s.gen_bonus, genBonusComp.bonusValue); // Cap general bonus
+                      }
+                      // Handle old mockBonus field if it exists and value entered
+                      const mockBonusComp = courseDetails.components.find(c => c.key === 'mockBonus');
+                      if(mockBonusComp && s.mockBonus) {
+                         additiveBonusAmount += Math.min(s.mockBonus, mockBonusComp.bonusValue);
+                      }
+                 }
             }
             
-            return Math.min(100, baseScore + bonusAmount);
+            return Math.min(100, baseScore + additiveBonusAmount); // Apply additive bonus and cap at 100
         }
+
 
         function updateDisplay() {
             if (!currentCourse) return;
@@ -422,21 +482,34 @@
                     scores[comp.key] = input.checked;
                 } else {
                     const value = parseFloat(input.value);
-                    if (!isNaN(value)) {
-                        scores[comp.key] = value;
-                    }
+                    // Allow 0, handle NaN for calculation (treat as 0)
+                    scores[comp.key] = isNaN(value) ? undefined : value; // Store undefined if empty/invalid for prediction logic
                 }
             });
 
-            const totalScore = calculateTotalScore(scores, currentCourse.formula);
+            // Pass course ID to calculation function
+            const totalScore = calculateTotalScore(scores, currentCourse.id);
             let status = '';
             
-            if (currentCourse.id === 'py' && (scores.pe1 < 40 && scores.pe2 < 40) && ('pe1' in scores || 'pe2' in scores)) {
+            // Re-check scores for warnings after potential undefined conversion
+            const pe1Score = scores['pe1'] !== undefined ? scores['pe1'] : -1;
+            const pe2Score = scores['pe2'] !== undefined ? scores['pe2'] : -1;
+            const opeScore = scores['ope'] !== undefined ? scores['ope'] : -1;
+
+            if (currentCourse.id === 'py' && (pe1Score < 40 && pe2Score < 40) && (pe1Score !== -1 || pe2Score !== -1)) {
                 status = 'Warning: Must score >= 40 in at least one OPPE.';
             }
-            if (currentCourse.id === 'dbms' && scores.ope < 35 && 'ope' in scores) {
+            if (currentCourse.id === 'dbms' && opeScore < 35 && opeScore !== -1) {
                 status = 'Warning: Must score >= 35 in OPE.';
             }
+             if (currentCourse.id === 'mlp' && (opeScore < 40 && opeScore !== -1)) { // Assuming 'ope1' is the key
+                 const ope1Score = scores['ope1'] !== undefined ? scores['ope1'] : -1;
+                 const ope2Score = scores['ope2'] !== undefined ? scores['ope2'] : -1;
+                  if ((ope1Score < 40 && ope2Score < 40) && (ope1Score !== -1 || ope2Score !== -1)) {
+                    status = 'Warning: Must score >= 40 in at least one OPPE.';
+                  }
+             }
+
 
             totalScoreEl.textContent = totalScore.toFixed(2);
             statusMessage.textContent = status;
@@ -445,6 +518,10 @@
             if (gradeInfo) {
                 finalGradeEl.textContent = gradeInfo.grade;
                 finalGradeEl.className = `text-3xl font-bold inline-block px-4 py-1 rounded-full ${gradeInfo.color} ${gradeInfo.text}`;
+            } else {
+                // Handle cases where score might be NaN or below 0 temporarily
+                finalGradeEl.textContent = 'N/A';
+                finalGradeEl.className = 'text-3xl font-bold text-gray-800 bg-gray-400 inline-block px-4 py-1 rounded-full';
             }
         }
 
@@ -461,14 +538,19 @@
                 currentCourse.components.forEach(comp => {
                     const input = document.getElementById(`score-${comp.key}`);
                     if (input.type === 'checkbox') {
+                         // Checkboxes are treated as entered, value is true/false
                          enteredScores[comp.key] = input.checked;
                     } else {
                         const value = parseFloat(input.value);
                         if (!isNaN(value)) {
                             enteredScores[comp.key] = value;
                         } else {
+                            // Only non-bonus fields count as remaining if empty
                             if (!comp.isBonus) {
                                remainingComponents.push(comp);
+                            } else {
+                                // Assume 0 for empty bonus fields during prediction
+                                enteredScores[comp.key] = 0;
                             }
                         }
                     }
@@ -483,22 +565,26 @@
                         const targetScore = grade.min;
                         let requiredAvg = -1;
 
-                        let low = 0, high = 100.01;
-                        for(let i = 0; i < 30; i++) {
+                        // Binary search for the required average score
+                        let low = 0, high = 100.01; // Extend high slightly to ensure 100 is checkable
+                        for(let i = 0; i < 30; i++) { // Limit iterations for performance
                             let mid = (low + high) / 2;
-                            if (mid > 100) { mid = 100.01; } // Cap search
+                            // Ensure mid doesn't exceed 100 for score input
+                            let currentTestAvg = Math.min(mid, 100);
+
                             const testScores = { ...enteredScores };
                             remainingComponents.forEach(comp => {
-                                testScores[comp.key] = mid;
+                                testScores[comp.key] = currentTestAvg;
                             });
                             
-                            const calculatedT = calculateTotalScore(testScores, currentCourse.formula);
+                            // Pass course ID to calculation function
+                            const calculatedT = calculateTotalScore(testScores, currentCourse.id);
                             
                             if (calculatedT >= targetScore) {
-                                requiredAvg = mid;
-                                high = mid;
+                                requiredAvg = currentTestAvg; // Potential answer
+                                high = mid; // Try lower scores
                             } else {
-                                low = mid;
+                                low = mid; // Need higher scores
                             }
                         }
                         
@@ -506,6 +592,7 @@
                         row.className = 'flex justify-between items-center p-3 rounded-lg';
                         let resultText = '';
                         
+                        // Check if a valid average was found and it's <= 100
                         if (requiredAvg !== -1 && requiredAvg <= 100) {
                             row.classList.add('bg-gray-800');
                             resultText = `<span class="font-bold text-green-400">${requiredAvg.toFixed(2)}%</span>`;
@@ -525,17 +612,22 @@
                 predictionResults.classList.remove('hidden');
                 predictButton.disabled = false;
                 predictButton.textContent = 'Calculate What I Need';
-            }, 50);
+            }, 50); // Small delay to allow UI update
         }
 
         function setupCalculator(courseId) {
             const level = document.querySelector('.tab-active').dataset.level;
             currentCourse = coursesData[level].find(c => c.id === courseId);
-            if (!currentCourse) return;
+            if (!currentCourse || !currentCourse.formula) { // Check if it's a calculable course
+                 calculatorInterface.classList.add('hidden');
+                 currentCourse = null; // Reset current course if not calculable
+                 return;
+            }
+
 
             calculatorInterface.classList.remove('hidden');
             courseTitle.textContent = currentCourse.name;
-            courseInfo.innerHTML = currentCourse.info.replace(/\n/g, '<br>');
+            courseInfo.innerHTML = currentCourse.info ? currentCourse.info.replace(/\n/g, '<br>') : 'No details provided.'; // Handle missing info
             courseInfo.classList.add('hidden');
             assessmentInputs.innerHTML = '';
 
@@ -546,18 +638,15 @@
                 let placeholder = `0-100`;
 
                 if (component.isBonus) {
-                    maxVal = component.bonusValue;
+                    maxVal = component.bonusValue; // Use specific max for bonus if defined
                     placeholder = `0-${maxVal}`;
-                } else if (currentCourse.id === 'ba') {
+                } else if (currentCourse.id === 'ba') { // Business Analytics specific max values
                     maxVal = component.key === 'f' ? 45 : 20;
                     placeholder = `0-${maxVal}`;
-                } else if (currentCourse.id === 'bdm') {
-                    if (component.key === 'ga') {
-                        maxVal = 30;
-                        placeholder = `0-30`;
-                    }
+                } else if (currentCourse.id === 'bdm' && component.key === 'ga') { // BDM GAA specific max
+                    maxVal = 30;
+                    placeholder = `0-${maxVal}`;
                 }
-
 
                 if (component.type === 'checkbox') {
                     div.className = 'flex items-center space-x-3';
@@ -565,20 +654,21 @@
                         <input type="checkbox" id="score-${component.key}" class="h-5 w-5 rounded border-gray-600 bg-gray-700 text-cyan-500 focus:ring-cyan-500">
                         <label for="score-${component.key}" class="font-medium text-gray-300">${component.name}</label>
                     `;
-                } else {
+                } else { // Default to number input
                     div.className = 'grid grid-cols-1 md:grid-cols-3 gap-2 items-center';
                     inputHtml = `
                         <label for="score-${component.key}" class="font-medium text-gray-300">${component.name}</label>
-                        <input type="number" id="score-${component.key}" placeholder="${placeholder}" min="0" max="${maxVal}" class="md:col-span-2 p-2 border rounded-md form-input">
-                    `;
+                        <input type="number" id="score-${component.key}" placeholder="${placeholder}" min="0" max="${maxVal}" step="any" class="md:col-span-2 p-2 border rounded-md form-input">
+                    `; // Added step="any" for decimals
                 }
                 
                 div.innerHTML = inputHtml;
                 assessmentInputs.appendChild(div);
+                // Attach event listener to the input/checkbox
                 document.getElementById(`score-${component.key}`).addEventListener('input', updateDisplay);
             });
             
-            updateDisplay();
+            updateDisplay(); // Initial calculation with empty fields
             predictionResults.classList.add('hidden');
         }
         
@@ -618,17 +708,26 @@
                 let levelTotalPoints = 0;
                 let levelTotalCredits = 0;
                 const levelContainer = document.getElementById(`cgpa-list-${level}`);
+                 if (!levelContainer) return; // Skip if container not found
                 const gradeSelects = levelContainer.querySelectorAll('.cgpa-grade-select');
 
                 gradeSelects.forEach(select => {
                     const grade = select.value;
-                    if (grade) {
+                    if (grade && gradePoints[grade] !== undefined) { // Ensure grade exists and has points
                         const courseId = select.dataset.courseId;
-                        const course = coursesData[level].find(c => c.id === courseId);
-                        const credits = course.credits || 4;
-                        const point = gradePoints[grade];
-                        levelTotalPoints += point * credits;
-                        levelTotalCredits += credits;
+                        // Find course across all levels to get credits correctly
+                        let courseDetails = null;
+                        for(const lvl in coursesData) {
+                            courseDetails = coursesData[lvl].find(c => c.id === courseId);
+                            if(courseDetails) break;
+                        }
+
+                        if(courseDetails){
+                            const credits = courseDetails.credits || 4; // Default to 4 if not specified
+                            const point = gradePoints[grade];
+                            levelTotalPoints += point * credits;
+                            levelTotalCredits += credits;
+                        }
                     }
                 });
 
@@ -664,9 +763,9 @@
             const data = JSON.parse(localStorage.getItem(`cgpa_${currentUser}`)) || {};
             cgpaCourseListsContainer.querySelectorAll('.cgpa-grade-select').forEach(select => {
                 const courseId = select.dataset.courseId;
-                select.value = data[courseId] || "";
+                select.value = data[courseId] || ""; // Set to empty string if not found
             });
-            calculateCgpa();
+            calculateCgpa(); // Recalculate after loading
         }
 
         // Background Animation
@@ -681,26 +780,28 @@
 
         function createParticles() {
             particles = [];
-            const particleCount = Math.floor((canvas.width * canvas.height) / 10000);
+            const particleCount = Math.floor((canvas.width * canvas.height) / 10000); // Adjust density if needed
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.3,
+                    vx: (Math.random() - 0.5) * 0.3, // Slow movement
                     vy: (Math.random() - 0.5) * 0.3,
-                    radius: Math.random() * 1.5,
+                    radius: Math.random() * 1.5, // Small particles
                 });
             }
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(209, 213, 219, 0.5)';
+            // Use a slightly transparent white for particles against the dark background
+            ctx.fillStyle = 'rgba(209, 213, 219, 0.5)'; // text-gray-300 with alpha
 
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
 
+                // Wrap particles around the screen
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
@@ -716,7 +817,7 @@
         
         window.addEventListener('resize', () => {
             resizeCanvas();
-            createParticles();
+            createParticles(); // Recreate particles on resize for density
         });
 
         // Event Listeners
@@ -754,19 +855,16 @@
             e.preventDefault();
             gradeCalculatorPage.classList.add('hidden');
             cgpaPage.classList.remove('hidden');
-            loadCgpaData();
+            loadCgpaData(); // Load data when CGPA page is shown
         });
         
-        // CGPA Modal Listeners
-        closeAuthModalButton.addEventListener('click', () => {
-            authModal.classList.add('opacity-0', 'pointer-events-none');
-            authModal.querySelector('.modal-content').classList.add('scale-95');
-        });
-        
+        // CGPA Page Listeners
         cgpaLevelTabs.addEventListener('click', (e) => {
             if (e.target.classList.contains('cgpa-tab')) {
+                // Style tabs
                 document.querySelectorAll('.cgpa-tab').forEach(tab => tab.classList.remove('tab-active'));
                 e.target.classList.add('tab-active');
+                // Show/Hide course lists
                 const level = e.target.dataset.level;
                 document.querySelectorAll('.cgpa-level-container').forEach(container => {
                     container.classList.add('hidden');
@@ -775,7 +873,13 @@
             }
         });
         
-        cgpaCourseListsContainer.addEventListener('change', calculateCgpa);
+        // Use event delegation for performance
+        cgpaCourseListsContainer.addEventListener('change', (e) => {
+             if (e.target.classList.contains('cgpa-grade-select')) {
+                 calculateCgpa();
+             }
+        });
+
         
         // Auth Listeners
         authButton.addEventListener('click', () => {
@@ -783,9 +887,13 @@
                 currentUser = null;
                 localStorage.removeItem('loggedInUser');
                 updateAuthButton();
+                // Optionally clear CGPA fields on logout
+                // populateCgpaModal(); // Re-populates empty fields
+                // calculateCgpa();
             } else { // Show login modal
                 authModal.classList.remove('opacity-0', 'pointer-events-none');
                 authModal.querySelector('.modal-content').classList.remove('scale-95');
+                authError.textContent = ''; // Clear previous errors
             }
         });
         
@@ -812,6 +920,11 @@
             e.preventDefault();
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
+             // Basic validation
+            if (!email || !password) {
+                 authError.textContent = 'Please enter both email and password.';
+                 return;
+            }
             const users = JSON.parse(localStorage.getItem('users')) || {};
             
             if (users[email]) {
@@ -819,25 +932,34 @@
                 return;
             }
             
-            users[email] = { password };
+            // In a real app, hash the password here!
+            users[email] = { password: password };
             localStorage.setItem('users', JSON.stringify(users));
             currentUser = email;
             localStorage.setItem('loggedInUser', currentUser);
             updateAuthButton();
             closeAuthModalButton.click();
+            loadCgpaData(); // Load data for the new user (likely empty)
         });
 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+             // Basic validation
+            if (!email || !password) {
+                 authError.textContent = 'Please enter both email and password.';
+                 return;
+            }
             const users = JSON.parse(localStorage.getItem('users')) || {};
 
+            // In a real app, compare hashed passwords!
             if (users[email] && users[email].password === password) {
                 currentUser = email;
                 localStorage.setItem('loggedInUser', currentUser);
                 updateAuthButton();
                 closeAuthModalButton.click();
+                loadCgpaData(); // Load data for the logged-in user
             } else {
                 authError.textContent = 'Invalid email or password.';
             }
@@ -860,11 +982,15 @@
             resizeCanvas();
             createParticles();
             animate();
-            populateCourses('foundation');
-            populateCgpaModal();
+            populateCourses('foundation'); // Populate initial grade calc dropdown
+            populateCgpaModal(); // Populate CGPA course lists
             
             currentUser = localStorage.getItem('loggedInUser');
             updateAuthButton();
+            // Load data only if user is logged in AND on the CGPA page initially (unlikely, but safe)
+            if (currentUser && !cgpaPage.classList.contains('hidden')) {
+                loadCgpaData();
+            }
         }
         
         initialize();
